@@ -11,6 +11,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
@@ -22,6 +24,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Controller {
+
+    private static final Media CON_TURNING_ON_AUDIO =
+            new Media(Controller.class.getResource("/6023_01.wav").toString());
+    private static final Media CON_TURNING_OFF_AUDIO =
+            new Media(Controller.class.getResource("/6021_01.wav").toString());
+    private static final Media CON_WORKING_AUDIO =
+            new Media(Controller.class.getResource("/6022_01.wav").toString());
 
     private List<ConditionerThread> threadList = new ArrayList<>();
     private MonitorThread monitorThread = new MonitorThread();
@@ -126,11 +135,11 @@ public class Controller {
 
     private void changeRegime(int conditionerId, double value) {
         ConditionerRegime regime;
-        if(value == 0) {
+        if (value == 0) {
             regime = ConditionerRegime.MAN_ON;
-        } else if(value == 1) {
+        } else if (value == 1) {
             regime = ConditionerRegime.MAN_OFF;
-        } else if(value == 2) {
+        } else if (value == 2) {
             regime = ConditionerRegime.AUTOMATIC;
         } else {
             return;
@@ -155,7 +164,7 @@ public class Controller {
                 Double.parseDouble(OptionsManager.getProperty(OptionsParameter.NEEDED_TEMPERATURE)),
                 Double.parseDouble(OptionsManager.getProperty(OptionsParameter.DEGREES_PER_ROW)),
                 Double.parseDouble(OptionsManager.getProperty(OptionsParameter.FATAL_TEMPERATURE)));
-        if(threadList.size() > 0) {
+        if (threadList.size() > 0) {
             threadList.get(0).setStopRequest(true);
             threadList.set(0, new ConditionerThread(conditioner));
         } else {
@@ -177,7 +186,7 @@ public class Controller {
                 Double.parseDouble(OptionsManager.getProperty(OptionsParameter.NEEDED_TEMPERATURE)),
                 Double.parseDouble(OptionsManager.getProperty(OptionsParameter.DEGREES_PER_ROW)),
                 Double.parseDouble(OptionsManager.getProperty(OptionsParameter.FATAL_TEMPERATURE)));
-        if(threadList.size() > 1) {
+        if (threadList.size() > 1) {
             threadList.get(1).setStopRequest(true);
             threadList.set(1, new ConditionerThread(conditioner));
         } else {
@@ -199,7 +208,7 @@ public class Controller {
                 Double.parseDouble(OptionsManager.getProperty(OptionsParameter.NEEDED_TEMPERATURE)),
                 Double.parseDouble(OptionsManager.getProperty(OptionsParameter.DEGREES_PER_ROW)),
                 Double.parseDouble(OptionsManager.getProperty(OptionsParameter.FATAL_TEMPERATURE)));
-        if(threadList.size() > 2) {
+        if (threadList.size() > 2) {
             threadList.get(2).setStopRequest(true);
             threadList.set(2, new ConditionerThread(conditioner));
         } else {
@@ -253,92 +262,152 @@ public class Controller {
         private AtomicBoolean stopRequest = new AtomicBoolean();
         private List<ConditionerState> stateList = Arrays.asList(
                 ConditionerState.OFF, ConditionerState.OFF, ConditionerState.OFF);
+        private List<MediaPlayer> playerList = Arrays.asList(
+                new MediaPlayer(CON_TURNING_ON_AUDIO),
+                new MediaPlayer(CON_TURNING_ON_AUDIO),
+                new MediaPlayer(CON_TURNING_ON_AUDIO));
+
+        private void addListenerToPlayer(MediaPlayer player, int index) {
+            player.setOnEndOfMedia(() -> {
+                player.dispose();
+                MediaPlayer player1 = new MediaPlayer(CON_WORKING_AUDIO);
+                player1.setOnEndOfMedia(this);
+                playerList.set(index, player1);
+                player1.play();
+            });
+        }
 
         @Override
         public void run() {
-            while(true) {
-                if(stopRequest.get()) {
+
+            while (true) {
+                if (stopRequest.get()) {
                     return;
                 }
                 restartLock.lock();
                 Conditioner con1 = threadList.get(0).getConditioner();
                 ConditionerState state = con1.getState();
-                if(state != stateList.get(0)) {
+                if (state != stateList.get(0)) {
                     stateList.set(0, state);
                     switch (state) {
                         case ON:
                             con1ImageView.setImage(new Image(
                                     OptionsManager.getProperty(OptionsParameter.MOVING_IMAGE)));
                             con1WorkIndicator.setFill(Color.GREEN);
+                            MediaPlayer player = playerList.get(0);
+                            player.stop();
+                            player.dispose();
+                            MediaPlayer player1 = new MediaPlayer(CON_TURNING_ON_AUDIO);
+                            addListenerToPlayer(player1, 0);
+                            playerList.set(0, player1);
+                            playerList.get(0).play();
                             break;
                         case OFF:
                             con1ImageView.setImage(new Image(
                                     OptionsManager.getProperty(OptionsParameter.STATIC_IMAGE)));
                             con1WorkIndicator.setFill(Color.WHITE);
+                            player = playerList.get(0);
+                            player.stop();
+                            player.dispose();
+                            player1 = new MediaPlayer(CON_TURNING_OFF_AUDIO);
+                            playerList.set(0, player1);
+                            playerList.get(0).play();
                             break;
                         case DISASTER:
                             con1ImageView.setImage(new Image(
                                     OptionsManager.getProperty(OptionsParameter.STATIC_IMAGE)));
                             con1WorkIndicator.setFill(Color.WHITE);
                             con1AlertIndicator.setFill(Color.RED);
+                            playerList.get(0).stop();
+                            playerList.get(0).dispose();
                             break;
                     }
                 }
-                if(state == ConditionerState.ON) {
+                if (state == ConditionerState.ON) {
                     con1TempSpinner.getValueFactory().setValue(con1.getCurrentTemperature());
                 }
 
                 Conditioner con2 = threadList.get(1).getConditioner();
                 state = con2.getState();
-                if(state != stateList.get(1)) {
+                if (state != stateList.get(1)) {
                     stateList.set(1, state);
                     switch (state) {
                         case ON:
                             con2ImageView.setImage(new Image(
                                     OptionsManager.getProperty(OptionsParameter.MOVING_IMAGE)));
                             con2WorkIndicator.setFill(Color.GREEN);
+                            MediaPlayer player = playerList.get(1);
+                            player.stop();
+                            player.dispose();
+                            MediaPlayer player1 = new MediaPlayer(CON_TURNING_ON_AUDIO);
+                            addListenerToPlayer(player1, 1);
+                            playerList.set(1, player1);
+                            playerList.get(1).play();
                             break;
                         case OFF:
                             con2ImageView.setImage(new Image(
                                     OptionsManager.getProperty(OptionsParameter.STATIC_IMAGE)));
                             con2WorkIndicator.setFill(Color.WHITE);
+                            player = playerList.get(1);
+                            player.stop();
+                            player.dispose();
+                            player1 = new MediaPlayer(CON_TURNING_OFF_AUDIO);
+                            playerList.set(1, player1);
+                            playerList.get(1).play();
                             break;
                         case DISASTER:
                             con2ImageView.setImage(new Image(
                                     OptionsManager.getProperty(OptionsParameter.STATIC_IMAGE)));
                             con2WorkIndicator.setFill(Color.WHITE);
                             con2AlertIndicator.setFill(Color.RED);
+                            playerList.get(1).stop();
+                            playerList.get(1).dispose();
                             break;
                     }
                 }
-                if(state == ConditionerState.ON) {
+                if (state == ConditionerState.ON) {
                     con2TempSpinner.getValueFactory().setValue(con2.getCurrentTemperature());
                 }
 
                 Conditioner con3 = threadList.get(2).getConditioner();
                 state = con3.getState();
-                if(state != stateList.get(2)) {
+                if (state != stateList.get(2)) {
                     stateList.set(2, state);
                     switch (state) {
                         case ON:
                             con3ImageView.setImage(new Image(
                                     OptionsManager.getProperty(OptionsParameter.MOVING_IMAGE)));
                             con3WorkIndicator.setFill(Color.GREEN);
+                            MediaPlayer player = playerList.get(2);
+                            player.stop();
+                            player.dispose();
+                            MediaPlayer player1 = new MediaPlayer(CON_TURNING_ON_AUDIO);
+                            addListenerToPlayer(player1, 2);
+                            playerList.set(2, player1);
+                            playerList.get(2).play();
                             break;
                         case OFF:
                             con3ImageView.setImage(new Image(
                                     OptionsManager.getProperty(OptionsParameter.STATIC_IMAGE)));
                             con3WorkIndicator.setFill(Color.WHITE);
+                            player = playerList.get(2);
+                            player.stop();
+                            player.dispose();
+                            player1 = new MediaPlayer(CON_TURNING_OFF_AUDIO);
+                            playerList.set(2, player1);
+                            playerList.get(2).play();
                             break;
                         case DISASTER:
                             con3ImageView.setImage(new Image(
                                     OptionsManager.getProperty(OptionsParameter.STATIC_IMAGE)));
                             con3WorkIndicator.setFill(Color.WHITE);
                             con3AlertIndicator.setFill(Color.RED);
+                            playerList.get(2).stop();
+                            playerList.get(2).dispose();
                             break;
                     }
                 }
-                if(state == ConditionerState.ON) {
+                if (state == ConditionerState.ON) {
                     con3TempSpinner.getValueFactory().setValue(con3.getCurrentTemperature());
                 }
 

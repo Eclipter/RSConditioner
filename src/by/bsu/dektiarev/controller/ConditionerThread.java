@@ -24,9 +24,8 @@ public class ConditionerThread extends Thread {
             if(getStopRequest()) {
                 break;
             }
-            //conditioner.getTemperatureLock().lock();
             if(conditioner.getCurrentTemperature() <= conditioner.getFatalTemperature() ||
-                    conditioner.getCurrentTemperature() >= Math.abs(conditioner.getFatalTemperature())) {
+                    conditioner.getCurrentTemperature() >= 40) {
                 conditioner.setState(ConditionerState.DISASTER);
                 break;
             }
@@ -47,7 +46,6 @@ public class ConditionerThread extends Thread {
                     }
                     break;
             }
-            //conditioner.getTemperatureLock().unlock();
             try {
                 Thread.sleep(TIME_OUT);
             } catch (InterruptedException e) {

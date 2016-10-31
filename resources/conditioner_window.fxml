@@ -23,7 +23,7 @@
                <children>
                   <ImageView fx:id="con1ImageView" fitHeight="142.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../resources/tmp-off.gif" />
+                        <Image url="@tmp-off.gif" />
                      </image>
                   </ImageView>
                   <Slider fx:id="con1Slider" blockIncrement="1.0" layoutX="456.0" layoutY="103.0" majorTickUnit="1.0" max="2.0" minorTickCount="0" showTickMarks="true" snapToTicks="true" value="1.0" />
@@ -31,7 +31,7 @@
                   <Label layoutX="569.0" layoutY="120.0" text="Авто" />
                   <Label layoutX="512.0" layoutY="120.0" text="Выкл" />
                   <Spinner fx:id="con1TempSpinner" layoutX="452.0" layoutY="46.0" />
-                  <Label layoutX="452.0" layoutY="29.0" text="Температура" />
+                  <Label layoutX="451.0" layoutY="21.0" text="Температура в помещении" />
                   <Circle fx:id="con1WorkIndicator" fill="WHITE" layoutX="221.0" layoutY="38.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
                   <Circle fx:id="con1AlertIndicator" fill="WHITE" layoutX="221.0" layoutY="71.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
                   <Button fx:id="con1RestartButton" layoutX="305.0" layoutY="107.0" mnemonicParsing="false" onAction="#restartConditioner" prefHeight="26.0" prefWidth="58.0" text="Рестарт" />
@@ -44,7 +44,7 @@
                <children>
                   <ImageView fx:id="con2ImageView" fitHeight="142.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../resources/tmp-off.gif" />
+                        <Image url="@tmp-off.gif" />
                      </image>
                   </ImageView>
                   <Slider fx:id="con2Slider" blockIncrement="1.0" layoutX="456.0" layoutY="104.0" majorTickUnit="1.0" max="2.0" minorTickCount="0" showTickMarks="true" snapToTicks="true" value="1.0" />
@@ -52,7 +52,7 @@
                   <Label layoutX="569.0" layoutY="120.0" text="Авто" />
                   <Label layoutX="513.0" layoutY="120.0" text="Выкл" />
                   <Spinner fx:id="con2TempSpinner" layoutX="452.0" layoutY="46.0" />
-                  <Label layoutX="452.0" layoutY="29.0" text="Температура" />
+                  <Label layoutX="452.0" layoutY="21.0" text="Температура в помещении" />
                   <Circle fx:id="con2WorkIndicator" fill="WHITE" layoutX="221.0" layoutY="38.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
                   <Circle fx:id="con2AlertIndicator" fill="WHITE" layoutX="221.0" layoutY="71.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
                   <Button fx:id="con2RestartButton" layoutX="305.0" layoutY="108.0" mnemonicParsing="false" onAction="#restartConditioner" text="Рестарт" />
@@ -65,7 +65,7 @@
                <children>
                   <ImageView fx:id="con3ImageView" fitHeight="142.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../resources/tmp-off.gif" />
+                        <Image url="@tmp-off.gif" />
                      </image>
                   </ImageView>
                   <Slider fx:id="con3Slider" blockIncrement="1.0" layoutX="456.0" layoutY="104.0" majorTickUnit="1.0" max="2.0" minorTickCount="0" showTickMarks="true" snapToTicks="true" value="1.0" />
@@ -73,7 +73,7 @@
                   <Label layoutX="568.0" layoutY="120.0" text="Авто" />
                   <Label layoutX="512.0" layoutY="120.0" text="Выкл" />
                   <Spinner fx:id="con3TempSpinner" layoutX="452.0" layoutY="46.0" />
-                  <Label layoutX="452.0" layoutY="29.0" text="Температура" />
+                  <Label layoutX="451.0" layoutY="21.0" text="Температура в помещении" />
                   <Circle fx:id="con3WorkIndicator" fill="WHITE" layoutX="221.0" layoutY="38.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
                   <Circle fx:id="con3AlertIndicator" fill="WHITE" layoutX="221.0" layoutY="71.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
                   <Button fx:id="con3RestartButton" layoutX="305.0" layoutY="108.0" mnemonicParsing="false" onAction="#restartConditioner" text="Рестарт" />

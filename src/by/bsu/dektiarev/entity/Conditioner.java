@@ -1,7 +1,6 @@
 package by.bsu.dektiarev.entity;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created by USER on 27.10.2016.
@@ -10,15 +9,14 @@ public class Conditioner {
 
     private double neededTemperature;
     private double degreesPerSecond;
-    private double currentTemperature;
-    private Lock temperatureLock = new ReentrantLock();
+    private AtomicReference<Double> currentTemperature;
     private double fatalTemperature;
     private ConditionerRegime regime;
     private ConditionerState state;
 
     public Conditioner(double neededTemperature, double degreesPerSecond, double fatalTemperature) {
         this.neededTemperature = neededTemperature;
-        this.currentTemperature = neededTemperature;
+        this.currentTemperature = new AtomicReference<>(neededTemperature);
         this.fatalTemperature = fatalTemperature;
         this.degreesPerSecond = degreesPerSecond;
         this.regime = ConditionerRegime.MAN_OFF;
@@ -26,13 +24,11 @@ public class Conditioner {
     }
 
     public double getCurrentTemperature() {
-        return currentTemperature;
+        return currentTemperature.get();
     }
 
     public void setCurrentTemperature(double currentTemperature) {
-        //temperatureLock.lock();
-        this.currentTemperature = currentTemperature;
-        //temperatureLock.unlock();
+        this.currentTemperature.set(currentTemperature);
     }
 
     public double getNeededTemperature() {
@@ -73,9 +69,5 @@ public class Conditioner {
 
     public void setState(ConditionerState state) {
         this.state = state;
-    }
-
-    public Lock getTemperatureLock() {
-        return temperatureLock;
     }
 }
