@@ -37,6 +37,8 @@
                   <Button fx:id="con1RestartButton" layoutX="305.0" layoutY="107.0" mnemonicParsing="false" onAction="#restartConditioner" prefHeight="26.0" prefWidth="58.0" text="Рестарт" />
                   <Label layoutX="243.0" layoutY="29.0" text="Работает" />
                   <Label layoutX="243.0" layoutY="63.0" text="Авария" />
+                  <Label layoutX="208.0" layoutY="99.0" text="t° = " />
+                  <Label fx:id="con1TempLabel" layoutX="231.0" layoutY="99.0" text="18" />
                </children>
             </Pane>
             <Separator prefWidth="200.0" />
@@ -58,6 +60,8 @@
                   <Button fx:id="con2RestartButton" layoutX="305.0" layoutY="108.0" mnemonicParsing="false" onAction="#restartConditioner" text="Рестарт" />
                   <Label layoutX="243.0" layoutY="29.0" text="Работает" />
                   <Label layoutX="243.0" layoutY="63.0" text="Авария" />
+                  <Label layoutX="208.0" layoutY="96.0" text="t° = " />
+                  <Label fx:id="con2TempLabel" layoutX="231.0" layoutY="96.0" text="18" />
                </children>
             </Pane>
             <Separator prefWidth="200.0" />
@@ -79,6 +83,8 @@
                   <Button fx:id="con3RestartButton" layoutX="305.0" layoutY="108.0" mnemonicParsing="false" onAction="#restartConditioner" text="Рестарт" />
                   <Label layoutX="243.0" layoutY="29.0" text="Работает" />
                   <Label layoutX="243.0" layoutY="63.0" text="Авария" />
+                  <Label layoutX="208.0" layoutY="95.0" text="t° = " />
+                  <Label fx:id="con3TempLabel" layoutX="231.0" layoutY="95.0" text="18" />
                </children>
             </Pane>
          </children>

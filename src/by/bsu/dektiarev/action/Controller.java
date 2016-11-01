@@ -6,6 +6,7 @@ import by.bsu.dektiarev.entity.ConditionerRegime;
 import by.bsu.dektiarev.entity.ConditionerState;
 import by.bsu.dektiarev.util.OptionsManager;
 import by.bsu.dektiarev.util.OptionsParameter;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -94,6 +95,15 @@ public class Controller {
     private MenuItem exitButton;
 
     @FXML
+    private Label con1TempLabel;
+
+    @FXML
+    private Label con2TempLabel;
+
+    @FXML
+    private Label con3TempLabel;
+
+    @FXML
     void exit(ActionEvent event) {
         threadList.forEach(thread -> thread.setStopRequest(true));
         monitorThread.setStopRequest(true);
@@ -159,6 +169,20 @@ public class Controller {
         con1WorkIndicator.setFill(Color.WHITE);
         con1AlertIndicator.setFill(Color.WHITE);
         con1Slider.adjustValue(1);
+        Task<Void> task = new Task<Void>() {
+            boolean stop = false;
+            @Override
+            protected Void call() throws Exception {
+                while (!stop) {
+                    updateMessage(con1TempSpinner.getValue().toString());
+                }
+                return null;
+            }
+        };
+        con1TempLabel.textProperty().bind(task.messageProperty());
+        Thread taskThread = new Thread(task);
+        taskThread.setDaemon(true);
+        taskThread.start();
 
         Conditioner conditioner = new Conditioner(
                 Double.parseDouble(OptionsManager.getProperty(OptionsParameter.NEEDED_TEMPERATURE)),
@@ -170,6 +194,7 @@ public class Controller {
         } else {
             threadList.add(new ConditionerThread(conditioner));
         }
+        threadList.get(0).setDaemon(true);
         threadList.get(0).start();
     }
 
@@ -181,6 +206,20 @@ public class Controller {
         con2WorkIndicator.setFill(Color.WHITE);
         con2AlertIndicator.setFill(Color.WHITE);
         con2Slider.adjustValue(1);
+        Task<Void> task = new Task<Void>() {
+            boolean stop = false;
+            @Override
+            protected Void call() throws Exception {
+                while (!stop) {
+                    updateMessage(con2TempSpinner.getValue().toString());
+                }
+                return null;
+            }
+        };
+        con2TempLabel.textProperty().bind(task.messageProperty());
+        Thread taskThread = new Thread(task);
+        taskThread.setDaemon(true);
+        taskThread.start();
 
         Conditioner conditioner = new Conditioner(
                 Double.parseDouble(OptionsManager.getProperty(OptionsParameter.NEEDED_TEMPERATURE)),
@@ -192,6 +231,7 @@ public class Controller {
         } else {
             threadList.add(new ConditionerThread(conditioner));
         }
+        threadList.get(1).setDaemon(true);
         threadList.get(1).start();
     }
 
@@ -203,6 +243,20 @@ public class Controller {
         con3WorkIndicator.setFill(Color.WHITE);
         con3AlertIndicator.setFill(Color.WHITE);
         con3Slider.adjustValue(1);
+        Task<Void> task = new Task<Void>() {
+            boolean stop = false;
+            @Override
+            protected Void call() throws Exception {
+                while (!stop) {
+                    updateMessage(con3TempSpinner.getValue().toString());
+                }
+                return null;
+            }
+        };
+        con3TempLabel.textProperty().bind(task.messageProperty());
+        Thread taskThread = new Thread(task);
+        taskThread.setDaemon(true);
+        taskThread.start();
 
         Conditioner conditioner = new Conditioner(
                 Double.parseDouble(OptionsManager.getProperty(OptionsParameter.NEEDED_TEMPERATURE)),
@@ -214,6 +268,7 @@ public class Controller {
         } else {
             threadList.add(new ConditionerThread(conditioner));
         }
+        threadList.get(2).setDaemon(true);
         threadList.get(2).start();
     }
 
@@ -225,26 +280,21 @@ public class Controller {
 
     @FXML
     void initialize() {
-        con1Slider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            changeRegime(0, (Double) newValue);
-        });
-        con2Slider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            changeRegime(1, (Double) newValue);
-        });
-        con3Slider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            changeRegime(2, (Double) newValue);
-        });
+        con1Slider.valueProperty().addListener((observable, oldValue, newValue) ->
+                changeRegime(0, (Double) newValue));
+        con2Slider.valueProperty().addListener((observable, oldValue, newValue) ->
+                changeRegime(1, (Double) newValue));
+        con3Slider.valueProperty().addListener((observable, oldValue, newValue) ->
+                changeRegime(2, (Double) newValue));
 
         initConditioners();
-        con1TempSpinner.valueProperty().addListener(((observable, oldValue, newValue) -> {
-            changeTemperature(0, newValue);
-        }));
-        con2TempSpinner.valueProperty().addListener(((observable, oldValue, newValue) -> {
-            changeTemperature(1, newValue);
-        }));
-        con3TempSpinner.valueProperty().addListener(((observable, oldValue, newValue) -> {
-            changeTemperature(2, newValue);
-        }));
+        con1TempSpinner.valueProperty().addListener(((observable, oldValue, newValue) ->
+                changeTemperature(0, newValue)));
+        con2TempSpinner.valueProperty().addListener(((observable, oldValue, newValue) ->
+                changeTemperature(1, newValue)));
+        con3TempSpinner.valueProperty().addListener(((observable, oldValue, newValue) ->
+                changeTemperature(2, newValue)));
+        monitorThread.setDaemon(true);
         monitorThread.start();
     }
 
